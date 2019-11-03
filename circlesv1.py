@@ -7,11 +7,12 @@ from datasets import CirclesData
 
 
 def init_params(nx, nh, ny):
-    """Initialize the parameters of the one-hidden layer perceptron"""
-
-    # nx: number of input features, nh: number of hidden cells,
-    # ny: number of output classes
-
+    """Initialize the parameters of the one-hidden layer perceptron
+    Args:
+        nx (int): number of input features
+        ny (int): number of hidden cells
+        ny (int): number of output classes
+    """
     params = {}
     # fill with parameters Wh, Wy, bh, by
     params['Wh'] = torch.randn(nh, nx) * 0.3
@@ -22,7 +23,11 @@ def init_params(nx, nh, ny):
 
 
 def forward(params, x):
-    """Forward pass to compute intermediary steps and output"""
+    """Forward pass to compute intermediary steps and output
+    Args:
+        params (dict): tensors parameters
+        x: input batch of size (B, Nx)
+    """
     outputs = {}
     Wh = params['Wh']
     bh = params['bh']
@@ -67,7 +72,7 @@ def accuracy(yhat, y):
     """Accuracy: the rate of correct predictions
     Args:
         yhat (Tensor): matrix of predictions, each row sums to 1
-        y (Tensor): matrix of targets, each row is one-hot encoded
+        y (Tensor): matrix of targets, each row is a one-hot encoded vector
     """
     _, yhat_inds = torch.max(yhat, 1)
 
@@ -83,7 +88,12 @@ def accuracy(yhat, y):
 
 
 def backward(params, outputs, y):
-    """Backward pass to calculate gradients w.r.t parameters"""
+    """Backward pass to calculate gradients w.r.t parameters
+    Args:
+        params (dict): tensors parameters
+        outputs (dict): tensors outputs from forward
+        y (Tensor): matrix of targets, each row is a one-hot encoded vector
+    """
     grads = {}
     yhat = outputs['yhat']
     h = outputs['h']
