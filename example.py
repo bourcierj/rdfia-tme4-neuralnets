@@ -1,17 +1,16 @@
 
 if __name__ == '__main__':
 
-    from tme5 import CirclesData
+    from datasets import CirclesData
 
     dataset = CirclesData()
 
-    Xtrain = dataset.Xtrain  # torch.Tensor containing network entries for training
-
-    print(Xtrain.size())  # affiche la taille des donn´ees : torch.Size([200, 2])
-    N = Xtrain.size(0)  # number of example
-    nx = Xtrain.size(1)  # dimensionality of input
-
+    X_train = dataset.X_train  # torch.Tensor containing network entries for training
+    X_test = dataset.X_test
+    print('Number of train examples:', X_train.size(0))  # affiche la taille des donn´ees : torch.Size([200, 2])
+    print('Number of test examples:', X_test.size(0))
     dataset.plot_data()  # plots points in train and test
+
     # computes predictions y for all points of the grid (forward et params non fournis,
     # à coder)
     # Ygrid = forward(params, data.Xgrid)
