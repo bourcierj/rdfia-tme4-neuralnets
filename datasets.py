@@ -47,7 +47,7 @@ class CirclesData:
         plt.legend()
         plt.show()
 
-    def plot_data_with_grid(self, y_grid, title=""):
+    def plot_data_with_grid(self, y_grid, title="", savepath=None):
         plt.figure(2)
         y_grid = y_grid[:,1].numpy()
         plt.clf()
@@ -60,11 +60,13 @@ class CirclesData:
         plt.ylim(0, 39)
         plt.clim(0.3, 0.7)
         plt.title(title)
-        plt.savefig("decision-boundary.pdf")
+        if savepath:
+            plt.savefig(savepath)
         plt.draw()
         plt.pause(1e-3)
 
-    def plot_loss_accuracy(self, loss_train, loss_test, acc_train, acc_test, ax=None):
+    def plot_loss_accuracy(self, loss_train, loss_test, acc_train, acc_test, ax=None,
+                           savepath=None):
 
         self.loss_train.append(loss_train)
         self.loss_test.append(loss_test)
@@ -82,7 +84,8 @@ class CirclesData:
         plt.plot(np.array(self.loss_test), label="Test")
         plt.title("Loss")
         plt.legend()
-        plt.savefig("training-logs.pdf")
+        if savepath:
+            plt.savefig(savepath)
         plt.show()
         plt.pause(1e-3)
 

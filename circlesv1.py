@@ -1,24 +1,29 @@
 
 import torch
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 
 from datasets import CirclesData
 
 
-def init_params(nx, nh, ny):
+def init_params(in_size, hidden_size, out_classes):
     """Initialize the parameters of the one-hidden layer perceptron
+
+    Values are initialized from \mathcal{U}(-\sqrt{k}, \sqrt{k})),
+    where k = \frac{1}{\text{in\_size}}
     Args:
-        nx (int): number of input features
-        ny (int): number of hidden cells
-        ny (int): number of output classes
+        in_size (int): number of input features
+        out_classes (int): number of hidden cells
+        out_classes (int): number of output classes
     """
     params = {}
     # fill with parameters Wh, Wy, bh, by
-    params['Wh'] = torch.randn(nh, nx) * 0.3
-    params['bh'] = torch.randn(nh, 1) * 0.3
-    params['Wy'] = torch.randn(ny, nh) * 0.3
-    params['by'] = torch.randn(ny, 1) * 0.3
+    k = math.sqrt(1 / in_size)
+    params['Wh'] = torch.rand(hidden_size, in_size)* 2 * k - k
+    params['bh'] = torch.rand(hidden_size, 1)* 2 * k - k
+    params['Wy'] = torch.rand(out_classes, hidden_size)* 2 * k - k
+    params['by'] = torch.rand(out_classes, 1)* 2 * k - k
     return params
 
 
@@ -133,16 +138,16 @@ def sgd_step(params, grads, eta):
     return params
 
 
-def train(dataset, nx, nh, ny, epochs, eta=0.03):
+def train(dataset, in_size, hidden_size, out_classes, epochs, eta=0.03, savedir=None):
     """Trains a one-hidden layer perceptron on the Circles dataset"""
-    params = init_params(nx, nh, ny)
+    params = init_params(in_size, hidden_size, out_classes)
 
     X_train = dataset.X_train
     y_train = dataset.y_train
     X_test = dataset.X_test
     y_test = dataset.y_test
 
-    for epoch in range(epochs):
+    for epoch in range(1, epochs+1):
 
         yhat, outputs = forward(params, X_train)
         loss = cross_entropy_loss(yhat, y_train)  # train loss
@@ -157,12 +162,13 @@ def train(dataset, nx, nh, ny, epochs, eta=0.03):
         acc_t = accuracy(yhat_t, y_test)
 
         # plot loss and accuracy history
-        dataset.plot_loss_accuracy(loss.item(), loss_t.item(), acc, acc_t)
+        dataset.plot_loss_accuracy(loss.item(), loss_t.item(), acc, acc_t,
+                                   savepath=savedir/'Training-logs.pdf' if savedir else None)
 
         # plot decision boundary of the current model
         yhat_grid, outputs = forward(params, dataset.X_grid)
-        dataset.plot_data_with_grid(yhat_grid, f"Decision Boundary (Epoch {epoch})")
-
+        dataset.plot_data_with_grid(yhat_grid, f"Decision Boundary (Epoch {epoch})",
+                                    savepath=savedir/'Decision-boundary.pdf' if savedir else None)
     return params
 
 
@@ -172,15 +178,15 @@ def unit_test0():
     dataset = CirclesData()
     B = dataset.X_train.shape[0]
     batch_size = 8
-    nx = dataset.X_train.shape[1]
-    nh = 10
-    ny = dataset.y_train.shape[1]
+    in_size = dataset.X_train.shape[1]
+    hidden_size = 10
+    out_classes = dataset.y_train.shape[1]
     eta = 0.03  # learning rate
 
     X = dataset.X_train[:batch_size]
     y = dataset.y_train[:batch_size]
 
-    params = init_params(nx, nh, ny)
+    params = init_params(in_size, hidden_size, out_classes)
     print('Parameters sizes:', {key: tuple(params[key].size())
                                 for key in params.keys()})
 
@@ -199,15 +205,18 @@ def unit_test0():
 
 if __name__ == '__main__':
 
+    from pathlib import Path
+
     # unit_test0()
     dataset = CirclesData()
-    nx = 2  # input features
-    nh = 10  # hidden cells
-    ny = 2  # classes
-    epochs = 200
-    eta = 0.03  # learning rate
+    in_size = 2  # input features
+    hidden_size = 10  # hidden cells
+    out_classes = 2  # classes
+    epochs = 100
+    eta = 0.006  # learning rate
 
-    params = train(dataset, nx, nh, ny, epochs, eta)
+    savedir = Path('./figs/torch-linear-init/')
+    params = train(dataset, in_size, hidden_size, out_classes, epochs, eta, savedir)
 
     X_train = dataset.X_train
     X_test = dataset.X_test
