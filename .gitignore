@@ -1,6 +1,10 @@
 # Project-specific
 
 /data/
+/figs/
+*.pdf
+*.png
+/RDFIA-TME4-5.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
