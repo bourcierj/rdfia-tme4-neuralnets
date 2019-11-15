@@ -8,7 +8,7 @@ from datasets import CirclesData
 
 
 def init_params(in_size, hidden_size, out_classes):
-    """Initialize the parameters of the one-hidden layer perceptron
+    """Initialize the parameters of the one-hidden layer perceptron.
 
     Values are initialized from \mathcal{U}(-\sqrt{k}, \sqrt{k})),
     where k = \frac{1}{\text{in\_size}}
@@ -28,7 +28,7 @@ def init_params(in_size, hidden_size, out_classes):
 
 
 def forward(params, x):
-    """Forward pass to compute intermediary steps and output
+    """Forward pass to compute intermediary steps and output.
     Args:
         params (dict): tensors parameters
         x: input batch of size (B, Nx)
@@ -74,7 +74,7 @@ def cross_entropy_loss(yhat, y):
 
 
 def accuracy(yhat, y):
-    """Accuracy: the rate of correct predictions
+    """Accuracy: the rate of correct predictions.
     Args:
         yhat (Tensor): matrix of predictions, each row sums to 1
         y (Tensor): matrix of targets, each row is a one-hot encoded vector
@@ -93,7 +93,7 @@ def accuracy(yhat, y):
 
 
 def backward(params, outputs, y):
-    """Backward pass to calculate gradients w.r.t parameters
+    """Backward pass to calculate gradients w.r.t parameters.
     Args:
         params (dict): tensors parameters
         outputs (dict): tensors outputs from forward
@@ -131,15 +131,14 @@ def backward(params, outputs, y):
 
 
 def sgd_step(params, grads, eta):
-    """One parameter update of SGD"""
-    # TODO mettre à jour le contenu de params
+    """One parameter update of SGD."""
     for key in params:
         params[key] -= eta * grads[key]
     return params
 
 
 def train(dataset, in_size, hidden_size, out_classes, epochs, eta=0.03, savedir=None):
-    """Trains a one-hidden layer perceptron on the Circles dataset"""
+    """Trains a one-hidden layer perceptron on the Circles dataset."""
     params = init_params(in_size, hidden_size, out_classes)
 
     X_train = dataset.X_train
@@ -173,10 +172,9 @@ def train(dataset, in_size, hidden_size, out_classes, epochs, eta=0.03, savedir=
 
 
 def unit_test0():
-    """First tests"""
+    """First tests."""
     # init
     dataset = CirclesData()
-    B = dataset.X_train.shape[0]
     batch_size = 8
     in_size = dataset.X_train.shape[1]
     hidden_size = 10
